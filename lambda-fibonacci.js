@@ -2,8 +2,11 @@
 // function that prints true for K and false for KI
 printBool  = x => console.log( x(true)(false) )
 
-// function that prints the value of a peano number
-printPeano = x => console.log( x(y => ++y)(0) )
+// function that prints the value of a church numeral
+printChurchNumeral = x => console.log( x(y => ++y)(0) )
+
+// function to print pairs of church numerals
+printPair = p => console.log( `(${fst(p)(y => ++y)(0)}, ${snd(p)(y => ++y)(0)})` )
 
 
 // bird functions
@@ -33,12 +36,13 @@ snd = p => p(KI)
 // phi combinator
 phi = p => P( snd(p) )( succ(snd(p)) )
 
-// define peano arithmetic
+// peano arithmetic with church numerals
 zero  = f  => x => x
 one   = f  => x => f(x)
 two   = f  => x => f(f(x))
 three = f  => x => f(f(f(x)))
 
+// successor and predecessor functions
 succ  = n  => f  => B(f)(n(f))
 pred  = n  => fst( n( phi )( P(zero)(zero) ) )
 
@@ -47,10 +51,19 @@ sub   = n1 => n2 => n2(pred)(n1)
 mul   = n1 => n2 => B(n1)(n2)    // == B
 pow   = n1 => n2 => n2(n1)       // == TH
 
+five  = add(two)(three)
+ten   = mul(five)(two)
+
 // number comparisons
 is0   = n  => n(K(KI))(K)
 leq   = n1 => n2 => is0( sub(n2)(n1) )
 eq    = n1 => n2 => and( leq(n1)(n2) )( leq(n2)(n1) )
 gt    = BL(not)(leq)
 
-printBool( gt(one)(three) )
+// fibonacci combinator
+fib   = p => P( snd(p) )( add(fst(p))(snd(p)) )
+
+// push to a stack
+push = x => s => P(s)(x)
+
+printChurchNumeral( snd( ten(fib)( P(one)(one) ) ) )
