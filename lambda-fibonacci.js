@@ -1,15 +1,16 @@
+// Oscar Saharoy 2021
 
-// function that prints true for K and false for KI
-printBool  = x => console.log( x(true)(false) )
 
-// function to print pairs of church numerals
-printPair = p => console.log( `(${fst(p)(y => ++y)(0)}, ${snd(p)(y => ++y)(0)})` )
+// --------------- DANGER : STATEFUL CODE ---------------------
 
-// function that prints the value of a church numeral
-printChurchNumeral = x => process.stdout.write( x(y => ++y)(0) )
+// function that prints the value of a church numeral wth a comma
+printChurchNumeral = x => process.stdout.write( x(y => ++y)(0) + ", " )
 
 // function that prints a list of church numerals
 printList = l => { printChurchNumeral( fst(l) ); if( snd(l) != K ) printList( snd(l) ); }
+
+// --------------- DANGER : STATEFUL CODE ---------------------
+
 
 // bird functions
 I  = x => x                 // ibis
@@ -22,6 +23,7 @@ BL = B(B)(B)                // blackbird
 // K and KI are functions representing true and false respectively
 K  = x => y => x
 KI = x => y => y
+lK = () => K // lambda returning K for lazy evaluation
 
 // define logical functions to take K or KI and return K or KI
 not = x => x(KI)(K)
@@ -52,6 +54,7 @@ sub   = n1 => n2 => n2(pred)(n1)
 mul   = n1 => n2 => B(n1)(n2)    // == B
 pow   = n1 => n2 => n2(n1)       // == TH
 
+// creating some numbers
 four  = succ(three)
 five  = add(two)(three)
 six   = mul(two)(three)
@@ -64,11 +67,16 @@ leq   = n1 => n2 => is0( sub(n2)(n1) )
 eq    = n1 => n2 => and( leq(n1)(n2) )( leq(n2)(n1) )
 gt    = BL(not)(leq)
 
-
-lK    = () => K // lambda returning K for lazy evaluation
+// Z combinator
+Z = f => (x => f(v => x(x)(v)))(x => f(v => x(x)(v)))
 
 // fibonacci combinators
 fib   = p => P( snd(p) )( add(fst(p))(snd(p)) )
-nFib  = n => p => () => P( fst(p) )( ( gt(n)(fst(p))( lK )( nFib(n)(fib(p)) ) )() )
+nFib  = n => p => () => P( fst(p) )( ( gt(n)(fst(p))( lK )( nFib(n)(fib(p)) ) )() ) // self-referential version
 
-printList( nFib( seven )( P(one)(one) )() )
+// creating recursive anonymous version of above using Z combinator
+F = f => n => p => () => P( fst(p) )( ( gt(n)(fst(p))( lK )( f(n)(fib(p)) ) )() )
+Zfib = Z(F)
+
+// print the fibonacci numbers up to the one after ten
+printList( Zfib( ten )( P(one)(one) )() )
