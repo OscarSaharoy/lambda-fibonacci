@@ -60,6 +60,7 @@ five  = add(two)(three)
 six   = mul(two)(three)
 seven = add(two)(five)
 ten   = mul(five)(two)
+hundred = pow(ten)(two)
 
 // number comparisons
 is0   = n  => n(K(KI))(K)
@@ -78,5 +79,5 @@ nFib  = n => p => () => P( fst(p) )( ( gt(n)(fst(p))( lK )( nFib(n)(fib(p)) ) )(
 F = f => n => p => () => P( fst(p) )( ( gt(n)(fst(p))( lK )( f(n)(fib(p)) ) )() )
 Zfib = Z(F)
 
-// print the fibonacci numbers up to the one after ten
-printList( Zfib( ten )( P(one)(one) )() )
+// print the fibonacci numbers up to the one after 100
+printList( Zfib( hundred )( P(one)(one) )() )
