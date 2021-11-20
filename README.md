@@ -4,7 +4,7 @@ Implementation of the Fibonacci sequence in JS using pure lambda calculus (excep
 
 The only rules available in lambda calculus are:
 
-- A character of string can represent a variable: `X = ...`
+- A character or string can represent a variable: `X = ...`
 - A function can be defined with parameters and a body, with the arguments becoming bound: `Y = a => ...`
 - A function can be applied to an argument: `Y(X)`
 
